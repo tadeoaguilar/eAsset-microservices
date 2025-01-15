@@ -1,4 +1,5 @@
 ﻿
+using System.Data.Common;
 using System.Reflection;
 
 
@@ -15,6 +16,7 @@ namespace Catalog.API.Infrastructure
         public DbSet<Organization> Organization => Set<Organization>();
         public DbSet<Location> Location => Set<Location>();
         public DbSet<Asset> Asset => Set<Asset>();
+        public DbSet<License> License => Set<License>();
         public DbSet<Manufacturer> Manufacturer => Set<Manufacturer>();
 
 
@@ -24,7 +26,7 @@ namespace Catalog.API.Infrastructure
         {
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             builder.HasDefaultSchema("catalog");
-
+            
 
             base.OnModelCreating(builder);
 
