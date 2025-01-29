@@ -10,7 +10,7 @@ namespace Catalog.API.Extensions
         public static void AddApplicationServices(this IHostApplicationBuilder builder)
         {
                                                         
-            builder.AddNpgsqlDbContext<CatalogContext>(connectionName: "catalogdb", configureDbContextOptions: dbContextOptionsBuilder => 
+            builder.AddNpgsqlDbContext<CatalogContext>(connectionName: "CatalogDB", configureDbContextOptions: dbContextOptionsBuilder => 
             {
                 
                 dbContextOptionsBuilder.UseSeeding((context, _) =>
