@@ -20,6 +20,8 @@ namespace Catalog.API.Apis
             .WithSummary("Get Asset by CD")
             .WithDescription("Get an asset from the catalog")
             .WithTags("Asset by CD");
+
+            app.MapPost("/api/catalog/assets", CreateAsset);
             return app;
         }
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -81,6 +83,35 @@ namespace Catalog.API.Apis
 
         return TypedResults.Ok(item);
     }
+
+        public static async Task<Created> CreateAsset(
+        [AsParameters] CatalogServices services,
+        Asset asset)
+    {
+        var item = new Asset
+        {
+            Id = new Guid(),
+            AssetCD = asset.AssetCD,
+            SubNumber = asset.SubNumber,
+            LocationID =asset.LocationID,
+            CostCenterID= asset.CostCenterID,
+            Description = asset.Description,
+            ManufacturerID = asset.ManufacturerID,
+            Active = asset.Active,
+            LastModified = DateTime.Now.ToUniversalTime(),
+            CreatedAt = DateTime.Now.ToUniversalTime()
+
+            
+        };
+        
+
+        services.Context.Asset.Add(item);
+        await services.Context.SaveChangesAsync();
+
+        return TypedResults.Created($"/api/catalog/assets/{item.Id}");
+    }
     
     }
+
+    
 }

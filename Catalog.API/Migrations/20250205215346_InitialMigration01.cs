@@ -232,11 +232,11 @@ namespace Catalog.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssetCD = table.Column<string>(type: "text", nullable: false),
+                    SubNumber = table.Column<int>(type: "integer", nullable: false),
                     LocationID = table.Column<Guid>(type: "uuid", nullable: false),
                     ManufacturerID = table.Column<Guid>(type: "uuid", nullable: false),
                     CostCenterID = table.Column<Guid>(type: "uuid", nullable: false),
-                    AssetCD = table.Column<string>(type: "text", nullable: false),
-                    SubNumber = table.Column<int>(type: "integer", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Active = table.Column<bool>(type: "boolean", nullable: false),
                     OrganizationId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -247,7 +247,7 @@ namespace Catalog.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Asset", x => x.Id);
+                    table.PrimaryKey("PK_Asset", x => new { x.Id, x.AssetCD, x.SubNumber });
                     table.ForeignKey(
                         name: "FK_Asset_CostCenter_CostCenterID",
                         column: x => x.CostCenterID,
@@ -282,18 +282,20 @@ namespace Catalog.API.Migrations
                 schema: "catalog",
                 columns: table => new
                 {
+                    LanguageDescrId = table.Column<Guid>(type: "uuid", nullable: false),
                     AssetId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LanguageDescrId = table.Column<Guid>(type: "uuid", nullable: false)
+                    AssetCD = table.Column<string>(type: "text", nullable: false),
+                    AssetSubNumber = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssetLanguageDescr", x => new { x.AssetId, x.LanguageDescrId });
+                    table.PrimaryKey("PK_AssetLanguageDescr", x => new { x.LanguageDescrId, x.AssetId, x.AssetCD, x.AssetSubNumber });
                     table.ForeignKey(
-                        name: "FK_AssetLanguageDescr_Asset_AssetId",
-                        column: x => x.AssetId,
+                        name: "FK_AssetLanguageDescr_Asset_AssetId_AssetCD_AssetSubNumber",
+                        columns: x => new { x.AssetId, x.AssetCD, x.AssetSubNumber },
                         principalSchema: "catalog",
                         principalTable: "Asset",
-                        principalColumn: "Id",
+                        principalColumns: new[] { "Id", "AssetCD", "SubNumber" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AssetLanguageDescr_LanguageDescr_LanguageDescrId",
@@ -335,10 +337,10 @@ namespace Catalog.API.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssetLanguageDescr_LanguageDescrId",
+                name: "IX_AssetLanguageDescr_AssetId_AssetCD_AssetSubNumber",
                 schema: "catalog",
                 table: "AssetLanguageDescr",
-                column: "LanguageDescrId");
+                columns: new[] { "AssetId", "AssetCD", "AssetSubNumber" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Company_CompanyCD",

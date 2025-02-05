@@ -7,8 +7,8 @@ namespace Catalog.API.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Asset> builder)
         {
-            builder.HasKey(t => t.Id);
-            builder.HasIndex(p => new { p.AssetCD, p.SubNumber });
+            builder.HasKey(t => new { t.Id, t.AssetCD, t.SubNumber });
+         builder.HasIndex(p => new { p.AssetCD, p.SubNumber });
         }
     }
 }

@@ -25,15 +25,21 @@ namespace Catalog.API.Migrations
 
             modelBuilder.Entity("AssetLanguageDescr", b =>
                 {
-                    b.Property<Guid>("AssetId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("LanguageDescrId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("AssetId", "LanguageDescrId");
+                    b.Property<Guid>("AssetId")
+                        .HasColumnType("uuid");
 
-                    b.HasIndex("LanguageDescrId");
+                    b.Property<string>("AssetCD")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AssetSubNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LanguageDescrId", "AssetId", "AssetCD", "AssetSubNumber");
+
+                    b.HasIndex("AssetId", "AssetCD", "AssetSubNumber");
 
                     b.ToTable("AssetLanguageDescr", "catalog");
                 });
@@ -41,15 +47,16 @@ namespace Catalog.API.Migrations
             modelBuilder.Entity("Catalog.API.Model.Asset", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("AssetCD")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SubNumber")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("AssetCD")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid>("CostCenterID")
                         .HasColumnType("uuid");
@@ -78,10 +85,7 @@ namespace Catalog.API.Migrations
                     b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("SubNumber")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
+                    b.HasKey("Id", "AssetCD", "SubNumber");
 
                     b.HasIndex("CostCenterID");
 
@@ -433,15 +437,15 @@ namespace Catalog.API.Migrations
 
             modelBuilder.Entity("AssetLanguageDescr", b =>
                 {
-                    b.HasOne("Catalog.API.Model.Asset", null)
-                        .WithMany()
-                        .HasForeignKey("AssetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Catalog.API.Model.LanguageDescr", null)
                         .WithMany()
                         .HasForeignKey("LanguageDescrId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Catalog.API.Model.Asset", null)
+                        .WithMany()
+                        .HasForeignKey("AssetId", "AssetCD", "AssetSubNumber")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
